@@ -1,5 +1,5 @@
 # income-expense-manager
 A Basic Expense Manager created using MERN Stack
-// Devlopment 
+// Development (Not Completed yet)
 
 => Signup and Login Pages => Income and Expense Manager pages
