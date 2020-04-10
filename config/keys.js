@@ -1,4 +1,4 @@
 module.exports = {
-    mongoURI: "mongodb+srv://balajikamalesan:arupadai@cluster0-vnhlj.mongodb.net/test",
+    mongoURI: "mongodb://localhost:27017/income-expense-manager",
     secretOrKey: "thisissecret"
   };
