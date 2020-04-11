@@ -4,6 +4,7 @@ const router = express.Router();
 
 const ValidateIncome = require('../../validation/income');
 const ValidateExpense = require('../../validation/expense');
+const ValidateToken = require("../../validation/validateToken")
 const User = require('../../models/Users')
 const income ={
     incomeSource : "Salary",
@@ -14,6 +15,22 @@ const expense = {
     expenseCategory : "Movie",
     expenseAmount : "50000"
 }
+
+router.post("/getdata",(req,res)=> {
+
+    const {errors,isValid,user} = ValidateToken(req);
+    if(!isValid){
+        
+        res.status(400).json(errors)
+    }
+    console.log(user)
+    User.findById(user.id).select({"income": 1,"expense" : 1, "_id":0}).then(result => {
+        
+        res.status(200).json(result)
+    })
+})
+
+
 router.post("/addIncome",(req,res) => {
 
     const {errors,isValid} = ValidateIncome(income);
@@ -22,6 +39,7 @@ router.post("/addIncome",(req,res) => {
         res.status(400).json(errors);
     }
 
+    
     
     User.findOneAndUpdate({email : req.body.email},{"$push" : {"income" : income }},{"useFindAndModify": false}).then(
         (user)=>{
