@@ -4,7 +4,7 @@ A Basic Expense Manager built using MERN Stack
 Tech Stack Used : MERN => MongoDB, Express, React,NodeJS
 Packages Used : Mongoose,BCrypt, JWT, Passport, HtmlTabletoExcel, Validator 
 
-# to install
+Procedures to Install :
  1=> clone the repo 2=> run npm install 3=> run client-install 4=> run npm run dev (This will start both frontend and backend)
 
 Features of Backend:
