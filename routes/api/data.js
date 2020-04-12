@@ -20,48 +20,63 @@ router.post("/getdata",(req,res)=> {
 
     const {errors,isValid,user} = ValidateToken(req);
     if(!isValid){
-        
         res.status(400).json(errors)
     }
     console.log(user)
     User.findById(user.id).select({"income": 1,"expense" : 1, "_id":0}).then(result => {
-        
         res.status(200).json(result)
     })
+    .catch(
+        (err) => {
+            res.status(400).json(err)
+        }
+    )
 })
 
 
 router.post("/addIncome",(req,res) => {
-
-    const {errors,isValid} = ValidateIncome(income);
+    
+    
+    const {errors,isValid,user} = ValidateToken(req);
+    
+    let email = null;
+    
     if(!isValid){
         console.log(errors);
         res.status(400).json(errors);
     }
+    else {
 
-    
-    
-    User.findOneAndUpdate({email : req.body.email},{"$push" : {"income" : income }},{"useFindAndModify": false}).then(
-        (user)=>{
-            
-          
-                if(!user){
-                    res.status(404).json({emailnotfound : "Email Not found"})
-                }
-                
-                else{
-                    
-                    res.status(200).json({
-                        message : "Income Added",
-                        success : true,
-                        user : user
-                    })
-                }
-             
-            
+        const {errors,isValid} = ValidateIncome(req.body)
+
+        if(!isValid){
+            res.status(400).json({error : "Income data is Invalid"})
+        }
+        User.findById(user.id).then((user) => {
+            if (!user) {
+                return res.status(404).json({ emailnotfound: "Email not found" });
+            }
+            email = user.email
         })
-    
-})
+        .then( () => {
+            User.findOneAndUpdate({email : email},{"$push" : {"income" : income }},{"useFindAndModify": false}).then(
+                (user)=>{
+                        if(!user){
+                            res.status(404).json({emailnotfound : "Email Not found"})
+                        }
+                        
+                        else{
+                            
+                            res.status(200).json({
+                                message : "Income Added",
+                                success : true,
+                                user : user
+                            })
+                        }  
+                })
+        })
+    }    
+ })
 
 
 router.post("/addExpense",(req,res) => {

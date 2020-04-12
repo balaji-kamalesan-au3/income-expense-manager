@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
-import { getData } from "../../actions/dataActions"
+import { getData } from "../../actions/dataActions";
+import { postIncome } from "../../actions/dataActions"
+import Table from "../layout/Table";
 class Dashboard extends Component {
   
   onLogoutClick = e => {
@@ -10,10 +12,19 @@ class Dashboard extends Component {
     this.props.logoutUser();
   };
 
+  onAddIncome = (e) => {
+    e.preventDefault();
+    let income = {
+      incomeSource : "Salary",
+      incomeAmount : "400000"
+    }
+    
+    this.props.postIncome(income);
+  }
+
   componentDidMount(){
-    const id = this.props.auth.user.id
-    console.log(typeof id)
-    this.props.getData(id)
+   
+    this.props.getData()
   }
 render() {
     const { user } = this.props.auth;
@@ -29,6 +40,7 @@ return (
                 <span style={{ fontFamily: "monospace" }}>MERN</span> app 👏
               </p>
             </h4>
+            <Table data={this.props.data.data}/>
             <button
               style={{
                 width: "150px",
@@ -40,6 +52,18 @@ return (
               className="btn btn-large waves-effect waves-light hoverable blue accent-3"
             >
               Logout
+            </button>
+            <button
+              style={{
+                width: "150px",
+                borderRadius: "3px",
+                letterSpacing: "1.5px",
+                marginTop: "1rem"
+              }}
+              onClick={this.onAddIncome}
+              className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+            >
+              Add income
             </button>
           </div>
         </div>
@@ -57,5 +81,5 @@ const mapStateToProps = state => ({
 });
 export default connect(
   mapStateToProps,
-  { logoutUser,getData }
+  { logoutUser,getData,postIncome }
 )(Dashboard);
