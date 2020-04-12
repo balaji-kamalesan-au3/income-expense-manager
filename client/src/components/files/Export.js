@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
@@ -15,6 +15,7 @@ class Export extends Component {
         }
     }
 
+    
     onChange = e => {
         
         this.setState({ transactiontype : e.target.value })
@@ -40,6 +41,11 @@ class Export extends Component {
             <div className="container">
             <div className="row">
                 <div className="col s12 center-align">
+
+                <Link to="/dashboard" className="btn-flat waves-effect">
+                <i className="material-icons left">keyboard_backspace</i> Back to
+                home
+                </Link>
 
                 <form onSubmit = {this.onSubmit}>
                 <h5>Transaction Type </h5>

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 import { getData,postIncome,postExpense } from "../../actions/dataActions";
+import { Link } from "react-router-dom";
 
  
 
@@ -43,8 +44,16 @@ class Dashboard extends Component {
       incomeSource : this.state.transactionCategory,
       incomeAmount : this.state.transactionAmount
     }
+    if(income.incomeSource === "" || income.incomeAmount=== 0){
+      alert("Please enter valid inputs");
+    }
+    else{
+      this.props.postIncome(income);
+      alert("Income added Successfully");
+      this.setState({transactionCategory : "",transactionAmount:0})
+
+    }
     
-    this.props.postIncome(income);
   }
 
   onAddExpense = (e) => {
@@ -53,9 +62,16 @@ class Dashboard extends Component {
       expenseCategory : this.state.transactionCategory,
       expenseAmount : this.state.transactionAmount
     }
-    console.log(expense)
+    if(expense.expenseCategory === "" || expense.expenseAmount === 0){
+      alert("Please enter Valid Inputs");
+    }
+    else {
+      this.props.postExpense(expense);
+      alert("Expense added Successfully");
+      this.setState({transactionCategory : "",transactionAmount:0})
+    }
 
-    this.props.postExpense(expense);
+    
   }
 
   componentDidMount(){
@@ -78,6 +94,10 @@ return (
                 Click below to add Income or Expense
               </p>
             </h4>
+
+            <Link to="/export" className="btn-flat waves-effect">
+                <i className="material-icons right">arrow_forward</i> Click here for your Transaction
+              </Link>
 
 
             <form onSubmit = {this.onSubmit}>
@@ -150,7 +170,11 @@ return (
           >
             Addexpense
           </button>}
-            <button
+         
+          </div>
+
+          <div className="col s12 center-align">
+          <button
               style={{
                 width: "150px",
                 borderRadius: "3px",
@@ -158,15 +182,12 @@ return (
                 marginTop: "1rem"
               }}
               onClick={this.onLogoutClick}
-              className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+              className="btn-flat waves-effect"
             >
               Logout
             </button>
-
-     
-           
-
           </div>
+      
         </div>
       </div>
     );

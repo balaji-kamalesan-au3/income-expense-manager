@@ -10,6 +10,24 @@ const Table = (props) => {
    }
    
     console.log(data)
+   
+    if(data === undefined || data.length === 0){
+        return (
+            <div style={{ height: "75vh" }} className="container valign-wrapper ">
+                <div className="row">
+                    <div className="col s12 center-align">
+
+                        <h4>No transaction found please make one !!!</h4>
+
+                    </div>
+                </div>
+
+            </div>
+        )
+    }
+
+    else {
+
     return(
         <div>
 
@@ -44,7 +62,7 @@ const Table = (props) => {
                     <td>{transaction.incomeAmount}</td>
                 </tr>
             ))
-            ) : <tr><td>Loading..</td></tr>}
+            ) : <tr><td>No transaction found</td></tr>}
 
             </tbody>
             
@@ -56,6 +74,7 @@ const Table = (props) => {
        
       
     )
+    }
 }
 
 const mapStateToProps = state => ({
