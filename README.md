@@ -15,7 +15,7 @@ Features of Backend:
   => Validation for each data in backend
   
  Features of Frontend:
-  => Completely bulit with redux
+  => Completely bulit with react and redux
   => Export Tables to Excel
   => Used Material CSS for Styling
   => An Unidirectional data flow using Redux
