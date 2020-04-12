@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
-import { getData } from "../../actions/dataActions";
-import { postIncome } from "../../actions/dataActions"
+import { getData,postIncome,postExpense } from "../../actions/dataActions";
+
 import Table from "../layout/Table";
 class Dashboard extends Component {
   
@@ -20,6 +20,16 @@ class Dashboard extends Component {
     }
     
     this.props.postIncome(income);
+  }
+
+  onAddExpense = (e) => {
+    e.preventDefault();
+    const expense = {
+      expenseCategory : "Movie",
+      expenseAmount : "50000"
+    }
+
+    this.props.postExpense(expense);
   }
 
   componentDidMount(){
@@ -65,6 +75,18 @@ return (
             >
               Add income
             </button>
+            <button
+              style={{
+                width: "150px",
+                borderRadius: "3px",
+                letterSpacing: "1.5px",
+                marginTop: "1rem"
+              }}
+              onClick={this.onAddExpense}
+              className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+            >
+              Add expense
+            </button>
           </div>
         </div>
       </div>
@@ -81,5 +103,5 @@ const mapStateToProps = state => ({
 });
 export default connect(
   mapStateToProps,
-  { logoutUser,getData,postIncome }
+  { logoutUser,getData,postIncome,postExpense }
 )(Dashboard);

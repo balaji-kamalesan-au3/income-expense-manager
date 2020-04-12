@@ -59,7 +59,7 @@ router.post("/addIncome",(req,res) => {
             email = user.email
         })
         .then( () => {
-            User.findOneAndUpdate({email : email},{"$push" : {"income" : income }},{"useFindAndModify": false}).then(
+            User.findOneAndUpdate({email : email},{"$push" : {"income" : req.body }},{"useFindAndModify": false}).then(
                 (user)=>{
                         if(!user){
                             res.status(404).json({emailnotfound : "Email Not found"})
@@ -79,35 +79,49 @@ router.post("/addIncome",(req,res) => {
  })
 
 
-router.post("/addExpense",(req,res) => {
-
-    const {errors,isValid} = ValidateExpense(expense);
+ router.post("/addExpense",(req,res) => {
+    
+    
+    const {errors,isValid,user} = ValidateToken(req);
+    
+    let email = null;
+    
     if(!isValid){
         console.log(errors);
         res.status(400).json(errors);
     }
+    else {
 
-    
-    User.findOneAndUpdate({email : req.body.email},{"$push" : {"expense" : expense }},{"useFindAndModify": false}).then(
-        (user)=>{
-           
-           
-                if(!user){
-                    res.status(404).json({emailnotfound : "Email Not found"})
-                }
-                
-                else{
-                    
-                    res.status(200).json({
-                        message : "Expense Added",
-                        success : true,
-                        user : user
-                    })
-                }
-             
-            
+        const {errors,isValid} = ValidateExpense(req.body)
+
+        if(!isValid){
+            res.status(400).json({error : "Income data is Invalid"})
+        }
+        User.findById(user.id).then((user) => {
+            if (!user) {
+                return res.status(404).json({ emailnotfound: "Email not found" });
+            }
+            email = user.email
         })
-    
-})
+        .then( () => {
+            User.findOneAndUpdate({email : email},{"$push" : {"expense" : req.body }},{"useFindAndModify": false}).then(
+                (user)=>{
+                        if(!user){
+                            res.status(404).json({emailnotfound : "Email Not found"})
+                        }
+                        
+                        else{
+                            
+                            res.status(200).json({
+                                message : "Expense Added",
+                                success : true,
+                                user : user
+                            })
+                        }  
+                })
+        })
+    }    
+ })
+
 
 module.exports = router
