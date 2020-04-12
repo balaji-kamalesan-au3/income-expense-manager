@@ -1,46 +1,71 @@
 import React from 'react'
+import { connect } from "react-redux";
+import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 
-const Table  = (props) => {
-    
-    
-    let income=null,expense=null;
-     if(props.data!== null) {income = props.data.income; expense = props.data.expense}
-     console.log(income,expense)
-
-    
+const Table = (props) => {
+    let data = undefined;
+   if(props.data !== null){
+    if(props.type === "income") data= props.data.income;
+    else data= props.data.expense;
+   }
+   
+    console.log(data)
     return(
         <div>
-            <table className="highlight responsive-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Item Name</th>
-                        <th>Item Price</th>
-                    </tr>
-                </thead>
 
-                <tbody>
-                    <tr>
-                        <td>Alvin</td>
-                        <td>Eclair</td>
-                        <td>$0.87</td>
-                    </tr>
-                    <tr>
-                        <td>Alan</td>
-                        <td>Jellybean</td>
-                        <td>$3.76</td>
-                    </tr>
-                    <tr>
-                        <td>Jonathan</td>
-                        <td>Lollipop</td>
-                        <td>$7.00</td>
-                    </tr>
-                </tbody>
-            </table>
+        <ReactHTMLTableToExcel
+        id="test-table-xls-button"
+        className="download-table-xls-button"
+        table="table-to-xls"
+        filename="tablexls"
+        sheet="tablexls"
+        buttonText="Download as XLS"/>
+        <table id="table-to-xls" className="striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th> Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+        
+            {data!==undefined? (props.type === "expense"?data.map(transaction => (
+                <tr key={transaction.date}>
+                    <td>{transaction.date}</td>
+                    <td>{transaction.expenseCategory}</td>
+                    <td>{transaction.expenseAmount}</td>
+                </tr>
+            )):
+            data.map(transaction => (
+                <tr key={transaction.date}>
+                    <td>{transaction.date}</td>
+                    <td>{transaction.incomeSource}</td>
+                    <td>{transaction.incomeAmount}</td>
+                </tr>
+            ))
+            ) : <tr><td>Loading..</td></tr>}
+
+            </tbody>
+            
+
+        </table>
+
+
         </div>
-
-
+       
+      
     )
 }
 
-export default Table
+const mapStateToProps = state => ({
+    auth: state.auth,
+    data: state.data.data,
+    errors: state.errors
+  });
+  export default connect(
+    mapStateToProps,
+    
+  )(Table);
+
+

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import {GET_DATA} from './types'
+import {GET_DATA,GET_ERRORS} from './types'
 
 export const getData = () => dispatch => {
     const token = localStorage.getItem("jwtToken")
@@ -8,6 +8,12 @@ export const getData = () => dispatch => {
         .post("/api/data/getdata",{headers : {"Authorization" : token}})
         .then(data => {
             dispatch(setData(data.data))
+        })
+        .catch((err) => {
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+              })
         })
 }
 
@@ -28,7 +34,12 @@ export const postIncome = (income) => dispatch => {
                 dispatch(getData());
             }
         )
-        .catch((err) => console.log(err))
+        .catch((err) => {
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+              })
+        })
 
 }
 
@@ -40,7 +51,14 @@ export const postExpense = (expense) => dispatch => {
         .then(
             () =>  { dispatch(getData()); }
         )
-        .catch ((err) => console.log(err));
+        .catch ((err) =>
+            {
+                dispatch({
+                    type: GET_ERRORS,
+                    payload: err.response.data
+                  })
+            }
+        );
 
 }
 

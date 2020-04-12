@@ -4,9 +4,34 @@ import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 import { getData,postIncome,postExpense } from "../../actions/dataActions";
 
-import Table from "../layout/Table";
+ 
+
+
 class Dashboard extends Component {
+
+  constructor(props){
+    super(props);
+    this.state ={
+      transactiontype : "income",
+      transactionCategory : "",
+      transactionAmount : 0,
+      errors : {} 
+    }
+  }
+
+  onSubmit = e => {
+    e.preventDefault();
+    console.log("Submitted")
+  }
   
+  handleChange = e => {
+    this.setState({ [e.target.id]: e.target.value });
+  };
+
+  onChange = e => {
+    this.setState({ transactiontype : e.target.value });
+  };
+
   onLogoutClick = e => {
     e.preventDefault();
     this.props.logoutUser();
@@ -15,8 +40,8 @@ class Dashboard extends Component {
   onAddIncome = (e) => {
     e.preventDefault();
     let income = {
-      incomeSource : "Salary",
-      incomeAmount : "400000"
+      incomeSource : this.state.transactionCategory,
+      incomeAmount : this.state.transactionAmount
     }
     
     this.props.postIncome(income);
@@ -25,9 +50,10 @@ class Dashboard extends Component {
   onAddExpense = (e) => {
     e.preventDefault();
     const expense = {
-      expenseCategory : "Movie",
-      expenseAmount : "50000"
+      expenseCategory : this.state.transactionCategory,
+      expenseAmount : this.state.transactionAmount
     }
+    console.log(expense)
 
     this.props.postExpense(expense);
   }
@@ -40,17 +66,90 @@ render() {
     const { user } = this.props.auth;
     console.log(this.props);
 return (
-      <div style={{ height: "75vh" }} className="container valign-wrapper">
+      <div style={{ height: "75vh" }} className="container ">
         <div className="row">
           <div className="col s12 center-align">
             <h4>
               <b>Hey there,</b> {user.name.split(" ")[0]}
               <p className="flow-text grey-text text-darken-1">
-                You are logged into a full-stack{" "}
-                <span style={{ fontFamily: "monospace" }}>MERN</span> app 👏
+                You are logged into {" "}
+                <span style={{ fontFamily: "monospace" }}>Income-Expense Manager MERN</span> app 👏 
+                <br />
+                Click below to add Income or Expense
               </p>
             </h4>
-            <Table data={this.props.data.data}/>
+
+
+            <form onSubmit = {this.onSubmit}>
+                <h5>Transaction Type </h5>
+                <label>
+                  <input className="with-gap"
+                  name="group1" 
+                  type="radio" 
+                  checked={this.state.transactiontype === "income"}  
+                  value ="income" onChange={this.onChange}/>
+                  <span>Income</span>
+                </label>
+
+                <label>
+                  <input 
+                  className="with-gap" 
+                  name="group1" 
+                  type="radio" 
+                  checked={this.state.transactiontype === "expense"} 
+                  value="expense" 
+                  onChange={this.onChange}/>
+                  <span>Expense</span>
+                </label>
+
+                <div className="input-field col s12">
+                <input
+                  onChange={this.handleChange}
+                  value={this.state.transactionCategory}
+                  id="transactionCategory"
+                  type="text"
+                />
+                <label htmlFor="transactionCategory">Transaction Category</label>
+              
+                </div>
+                <div className="input-field col s12">
+                <input
+                  onChange={this.handleChange}
+                  value={this.state.transactionAmount}
+                  id="transactionAmount"
+                  type="text"
+                />
+                <label htmlFor="transactionAmount">Transaction Amount</label>
+              
+                </div>
+
+                
+
+            </form>
+            {this.state.transactiontype === "income"?<button
+              style={{
+                width: "150px",
+                borderRadius: "3px",
+                letterSpacing: "1.5px",
+                marginTop: "1rem"
+              }}
+              onClick={this.onAddIncome}
+              className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+            >
+              Addincome
+            </button>:
+            <button
+            style={{
+              width: "150px",
+              borderRadius: "3px",
+              letterSpacing: "1.5px",
+              marginTop: "1rem"
+            }}
+            onClick={this.onAddExpense}
+            className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+          >
+            Addexpense
+          </button>}
             <button
               style={{
                 width: "150px",
@@ -63,30 +162,10 @@ return (
             >
               Logout
             </button>
-            <button
-              style={{
-                width: "150px",
-                borderRadius: "3px",
-                letterSpacing: "1.5px",
-                marginTop: "1rem"
-              }}
-              onClick={this.onAddIncome}
-              className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-            >
-              Add income
-            </button>
-            <button
-              style={{
-                width: "150px",
-                borderRadius: "3px",
-                letterSpacing: "1.5px",
-                marginTop: "1rem"
-              }}
-              onClick={this.onAddExpense}
-              className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-            >
-              Add expense
-            </button>
+
+     
+           
+
           </div>
         </div>
       </div>
@@ -99,7 +178,8 @@ Dashboard.propTypes = {
 };
 const mapStateToProps = state => ({
   auth: state.auth,
-  data: state.data
+  data: state.data,
+  errors: state.errors
 });
 export default connect(
   mapStateToProps,

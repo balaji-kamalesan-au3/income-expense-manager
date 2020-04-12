@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
                 className="col s5 brand-logo center black-text"
                 >
                 <i className="material-icons">code</i>
-                MERN
+                MERN Expense Manager
                 </Link>
             </div>
             </nav>

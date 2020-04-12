@@ -6,15 +6,7 @@ const ValidateIncome = require('../../validation/income');
 const ValidateExpense = require('../../validation/expense');
 const ValidateToken = require("../../validation/validateToken")
 const User = require('../../models/Users')
-const income ={
-    incomeSource : "Salary",
-    incomeAmount : "400000"
-}
 
-const expense = {
-    expenseCategory : "Movie",
-    expenseAmount : "50000"
-}
 
 router.post("/getdata",(req,res)=> {
 
@@ -78,7 +70,6 @@ router.post("/addIncome",(req,res) => {
     }    
  })
 
-
  router.post("/addExpense",(req,res) => {
     
     
@@ -91,15 +82,15 @@ router.post("/addIncome",(req,res) => {
         res.status(400).json(errors);
     }
     else {
-
+        console.log(req.body)
         const {errors,isValid} = ValidateExpense(req.body)
-
+        console.log(isValid,errors)
         if(!isValid){
             res.status(400).json({error : "Income data is Invalid"})
         }
         User.findById(user.id).then((user) => {
             if (!user) {
-                return res.status(404).json({ emailnotfound: "Email not found" });
+                res.status(404).json({ emailnotfound: "Email not found" });
             }
             email = user.email
         })
@@ -113,15 +104,27 @@ router.post("/addIncome",(req,res) => {
                         else{
                             
                             res.status(200).json({
-                                message : "Expense Added",
+                                message : "Income Added",
                                 success : true,
                                 user : user
                             })
                         }  
                 })
+                .catch(
+                    (err) => {
+                        res.status(400).json({error : err})
+                    }
+                )
         })
+        .catch(
+            (err) => {
+                res.status(400).json({error : "Cant add",err})
+            }
+        )
     }    
  })
 
+
+ 
 
 module.exports = router
